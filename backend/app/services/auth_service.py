@@ -1,6 +1,7 @@
 import jwt
 import bcrypt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from pytz import timezone as pytz_timezone
 from app.config import Config
 from app.db.mongo import users_collection, chat_history_collection
 from bson.objectid import ObjectId
@@ -8,6 +9,11 @@ from bson.objectid import ObjectId
 SECRET_KEY = Config.SECRET_KEY or "your-secret-key-change-this"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30 days
+IST = pytz_timezone('Asia/Kolkata')
+
+def get_ist_now():
+    """Get current time in Indian Standard Time (IST)."""
+    return datetime.now(IST)
 
 def hash_password(password: str) -> str:
     """Hash a password using bcrypt."""
@@ -54,7 +60,7 @@ def register_user(email: str, password: str, name: str):
         "email": email,
         "password": hashed_password,
         "name": name,
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": get_ist_now().isoformat()
     }
     
     result = users_collection.insert_one(user_data)
@@ -96,12 +102,13 @@ def login_user(email: str, password: str):
 
 def save_chat_history(user_id: str, title: str, messages: list):
     """Save a chat conversation to history."""
+    ist_now = get_ist_now().isoformat()
     chat_data = {
         "user_id": user_id,
         "title": title,
         "messages": messages,
-        "created_at": datetime.utcnow().isoformat(),
-        "updated_at": datetime.utcnow().isoformat()
+        "created_at": ist_now,
+        "updated_at": ist_now
     }
     
     result = chat_history_collection.insert_one(chat_data)

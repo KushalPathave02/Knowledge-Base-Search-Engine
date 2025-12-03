@@ -3,23 +3,13 @@ from app.config import Config
 
 client = ollama.Client(host=Config.OLLAMA_BASE_URL)
 
-def generate_answer(prompt: str, model: str = "mistral"):
-    """
-    Generate answer using Ollama with optimized parameters for accuracy.
-    
-    Models available (in order of accuracy):
-    - mistral: Fast and accurate, good for RAG
-    - neural-chat: Optimized for conversations
-    - llama2: General purpose
-    - llama3: Larger but slower
-    """
+def generate_answer(prompt: str, model: str = "llama3"):
     try:
         response = client.generate(
             model=model,
-            prompt=prompt,
-            stream=False
+            prompt=prompt
         )
-        return response['response'].strip()
+        return response['response']
     except Exception as e:
         # Handle potential connection errors or other issues with Ollama service
         print(f"Error calling Ollama: {e}")

@@ -11,3 +11,4 @@ numpy
 pydantic[email]
 PyJWT
 bcrypt
+pytz

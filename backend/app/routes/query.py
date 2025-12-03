@@ -11,7 +11,7 @@ router = APIRouter()
 @router.get("/api/search", response_model=SearchResponse)
 async def search_query(
     q: str,
-    top_k: int = 12,  # Increased from 8 to get more context for better accuracy
+    top_k: int = 8,
     authorization: Optional[str] = Header(None)
 ):
     if not q:
@@ -31,23 +31,17 @@ async def search_query(
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     try:
-        # Search for relevant passages - retrieve more for better context and accuracy
+        # Search for relevant passages (get more to ensure quality)
         retrieved_passages = vector_search(q, user_id, top_k)
         if not retrieved_passages:
-            return SearchResponse(answer="I don't have information about this in the documents. Please upload documents first.", sources=[])
+            return SearchResponse(answer="I don't know.", sources=[])
 
-        # Use top 8 passages for generating answer (better context)
-        passages_for_answer = retrieved_passages[:8]
-        
-        prompt = build_rag_prompt(q, passages_for_answer)
+        prompt = build_rag_prompt(q, retrieved_passages)
         answer = generate_answer(prompt)
         
-        # Return top 3 most relevant sources to user for reference
+        # Only return top 3 most relevant sources to user (not all 8)
         top_sources = retrieved_passages[:3]
         
         return SearchResponse(answer=answer, sources=top_sources)
     except Exception as e:
-        import traceback
-        error_msg = f"Search error: {str(e)}\n{traceback.format_exc()}"
-        print(error_msg)
-        raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

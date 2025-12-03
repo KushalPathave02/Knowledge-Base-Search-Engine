@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Header
 from typing import Optional
 from app.services.vectorstore import vector_search
 from app.services.ollama_client import generate_answer
-from app.utils.prompt_builder import build_rag_prompt
+from app.utils.prompt_builder import build_rag_prompt, clean_answer
 from app.models.pydantic_models import SearchResponse
 from app.services.auth_service import verify_token
 
@@ -34,10 +34,13 @@ async def search_query(
         # Search for relevant passages (get more to ensure quality)
         retrieved_passages = vector_search(q, user_id, top_k)
         if not retrieved_passages:
-            return SearchResponse(answer="I don't know.", sources=[])
+            return SearchResponse(answer="I don't have this information in the documents.", sources=[])
 
         prompt = build_rag_prompt(q, retrieved_passages)
         answer = generate_answer(prompt)
+        
+        # Clean and format the answer
+        answer = clean_answer(answer)
         
         # Only return top 3 most relevant sources to user (not all 8)
         top_sources = retrieved_passages[:3]

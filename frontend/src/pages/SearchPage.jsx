@@ -4,13 +4,72 @@ import axios from 'axios';
 import { searchQuery, uploadFile as uploadFileAPI } from '../api/api';
 import SourceSnippet from '../components/SourceSnippet';
 
-const ChatMessage = ({ message, isUser }) => (
-  <div className={`message-wrapper ${isUser ? 'user' : ''}`}>
-    <div className={`message-bubble ${isUser ? 'user' : 'bot'}`}>
-      <p>{message.text}</p>
+const ChatMessage = ({ message, isUser }) => {
+  const parseStructuredAnswer = (text) => {
+    // Split by common section markers
+    const sections = text.split(/\n(?=[A-Z][A-Z\s]+:|\*\*[A-Z])/);
+    
+    if (sections.length === 1) {
+      return <p>{text}</p>;
+    }
+
+    return (
+      <div>
+        {sections.map((section, idx) => {
+          const lines = section.trim().split('\n');
+          const firstLine = lines[0];
+          
+          // Check if this is a heading
+          const headingMatch = firstLine.match(/^(\*\*)?([A-Z][A-Z\s]+):?(\*\*)?/);
+          
+          if (headingMatch) {
+            const heading = headingMatch[2];
+            const content = lines.slice(1).join('\n').trim();
+            
+            return (
+              <div key={idx} className="answer-section">
+                <div className="answer-heading">✓ {heading}</div>
+                <div className="answer-content">
+                  {content.split('\n').map((line, lineIdx) => {
+                    if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+                      return null;
+                    }
+                    return <p key={lineIdx} style={{ marginBottom: '6px' }}>{line}</p>;
+                  })}
+                  {content.includes('-') && (
+                    <ul className="answer-list">
+                      {content.split('\n').map((line, lineIdx) => {
+                        if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+                          return <li key={lineIdx}>{line.replace(/^[-•]\s*/, '')}</li>;
+                        }
+                        return null;
+                      })}
+                    </ul>
+                  )}
+                </div>
+                {idx < sections.length - 1 && <div className="answer-divider"></div>}
+              </div>
+            );
+          }
+          
+          return (
+            <div key={idx} style={{ marginBottom: '12px' }}>
+              <p>{section.trim()}</p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  return (
+    <div className={`message-wrapper ${isUser ? 'user' : ''}`}>
+      <div className={`message-bubble ${isUser ? 'user' : 'bot'}`}>
+        {isUser ? <p>{message.text}</p> : parseStructuredAnswer(message.text)}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 function SearchPage({ chatId, isLoggedIn = false, onChatSaved }) {
   const [messages, setMessages] = useState([]);

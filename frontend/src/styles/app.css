@@ -142,12 +142,19 @@ body {
 
 .message-bubble {
   max-width: 85%;
-  padding: 16px 20px;
-  border-radius: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
   word-wrap: break-word;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  line-height: 1.6;
-  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  line-height: 1.7;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.message-bubble p {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .message-bubble.user {
@@ -157,9 +164,9 @@ body {
 }
 
 .message-bubble.bot {
-  background: white;
+  background: #f7f7f7;
   color: #333;
-  border: 1px solid #e0e7ff;
+  border: none;
   border-bottom-left-radius: 4px;
 }
 

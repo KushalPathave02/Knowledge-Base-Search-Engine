@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: knowledge-base-backend
+    runtime: python
+    pythonVersion: 3.11
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGO_URI
+        scope: build
+      - key: OLLAMA_HOST
+        scope: build
+      - key: EMBED_MODEL_NAME
+        scope: build
+      - key: SECRET_KEY
+        scope: build
+    autoDeploy: true

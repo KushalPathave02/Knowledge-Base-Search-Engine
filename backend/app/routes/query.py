@@ -34,7 +34,7 @@ async def search_query(
         # Search for relevant passages - retrieve more for better context and accuracy
         retrieved_passages = vector_search(q, user_id, top_k)
         if not retrieved_passages:
-            return SearchResponse(answer="I don't have information about this in the documents.", sources=[])
+            return SearchResponse(answer="I don't have information about this in the documents. Please upload documents first.", sources=[])
 
         # Use top 8 passages for generating answer (better context)
         passages_for_answer = retrieved_passages[:8]
@@ -47,4 +47,7 @@ async def search_query(
         
         return SearchResponse(answer=answer, sources=top_sources)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        error_msg = f"Search error: {str(e)}\n{traceback.format_exc()}"
+        print(error_msg)
+        raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")

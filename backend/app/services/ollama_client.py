@@ -17,12 +17,7 @@ def generate_answer(prompt: str, model: str = "mistral"):
         response = client.generate(
             model=model,
             prompt=prompt,
-            stream=False,
-            # Parameters for better accuracy
-            temperature=0.1,  # Lower temperature = more deterministic/accurate
-            top_p=0.9,        # Nucleus sampling for quality
-            top_k=40,         # Limit vocabulary
-            num_predict=500   # Limit response length
+            stream=False
         )
         return response['response'].strip()
     except Exception as e:

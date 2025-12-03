@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/constants';
 
 function LoginPage({ onLoginSuccess, isSignup = false, onBackClick }) {
   const [isLogin, setIsLogin] = useState(!isSignup);
@@ -20,7 +21,7 @@ function LoginPage({ onLoginSuccess, isSignup = false, onBackClick }) {
         ? { email, password }
         : { email, password, name };
 
-      const response = await axios.post(`http://localhost:8000${endpoint}`, data);
+      const response = await axios.post(`${API_BASE_URL}${endpoint}`, data);
       
       // Save token and user info to localStorage
       localStorage.setItem('token', response.data.access_token);

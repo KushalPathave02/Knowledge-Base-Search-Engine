@@ -3,6 +3,7 @@ import { Send, Upload as UploadIcon } from 'lucide-react';
 import axios from 'axios';
 import { searchQuery, uploadFile as uploadFileAPI } from '../api/api';
 import SourceSnippet from '../components/SourceSnippet';
+import { API_BASE_URL } from '../config/constants';
 
 const ChatMessage = ({ message, isUser }) => {
   const parseStructuredAnswer = (text) => {
@@ -108,7 +109,7 @@ function SearchPage({ chatId, isLoggedIn = false, onChatSaved }) {
     if (!token) return;
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/history/${id}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/history/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -125,7 +126,7 @@ function SearchPage({ chatId, isLoggedIn = false, onChatSaved }) {
 
     try {
       const title = chatMessages[0]?.text?.substring(0, 50) || 'New Chat';
-      await axios.post('http://localhost:8000/api/history/save', {
+      await axios.post(`${API_BASE_URL}/api/history/save`, {
         title: title,
         messages: chatMessages
       }, {

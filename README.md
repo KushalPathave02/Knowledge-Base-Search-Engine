@@ -107,7 +107,7 @@ A **Retrieval-Augmented Generation (RAG)** system that allows users to upload PD
 
 ### Database & Deployment
 - **MongoDB Atlas**: Cloud database
-- **Render**: Backend hosting
+- **Render**: Backend and frontend hosting
 
 ---
 

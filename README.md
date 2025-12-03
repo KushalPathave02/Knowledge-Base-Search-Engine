@@ -307,7 +307,7 @@ npm run dev
 - **URL**: https://knowledge-base-search-engine-c9fv.onrender.com
 - See `DEPLOYMENT_GUIDE.md` for setup
 
-### Frontend (Netlify)
+### Frontend (Render)
 - Deploy with `npm run build`
 - Publish directory: `dist`
 - See `DEPLOYMENT_GUIDE.md` for setup

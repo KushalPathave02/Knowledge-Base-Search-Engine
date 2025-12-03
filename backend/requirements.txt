@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pymongo
+python-multipart
+pypdf
+sentence-transformers
+ollama
+pydantic
+python-dotenv
+numpy
+pydantic[email]
+PyJWT
+bcrypt

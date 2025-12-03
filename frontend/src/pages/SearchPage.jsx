@@ -8,14 +8,6 @@ const ChatMessage = ({ message, isUser }) => (
   <div className={`message-wrapper ${isUser ? 'user' : ''}`}>
     <div className={`message-bubble ${isUser ? 'user' : 'bot'}`}>
       <p>{message.text}</p>
-      {!isUser && message.sources && (
-        <div className="sources-container">
-          <div className="sources-title">📎 Sources</div>
-          {message.sources.map((source, index) => (
-            <SourceSnippet key={index} source={source} />
-          ))}
-        </div>
-      )}
     </div>
   </div>
 );
